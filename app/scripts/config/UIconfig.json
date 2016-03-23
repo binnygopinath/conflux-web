@@ -3,16 +3,16 @@
   "uiDisplayConfigurations": {
 	"loanAccount": {
 	  "isHiddenField": {
-		"fundId": true,
+		"fundId": false,
 		"linkAccountId": true,
 		"createStandingInstruction": true,
-		"numberOfRepayments": true,
-		"repaymentEvery": true,
+		"numberOfRepayments": false,
+		"repaymentEvery": false,
 		"repaymentFrequencyType": true,
 		"repaymentFrequencyNthDayType": true,
 		"repaymentFrequencyDayOfWeekType": true,
-		"interestChargedFromDate": true,
-		"repaymentsStartingFromDate": true,
+		"interestChargedFromDate": false,
+		"repaymentsStartingFromDate": false,
 		"interestType": true,
 		"amortizationType": true,
 		"interestCalculationPeriodType": true,
@@ -20,14 +20,79 @@
 		"graceOnInterestCharged": true,
 		"transactionProcessingStrategyId": true,
 		"graceOnInterestPayment": true,
-		"graceOnArrearsAgeing": true
+		"graceOnArrearsAgeing": true,
+		"syncDisbursementDateWithMeeting":true
 	  },
 	  "isHiddenSection": {
 		"interestRecalculationSection": true,
 		"collateralSection": true
 	  },
 	  "isReadOnlyField": {
-		"loanTermFrequencyType": true
+		"loanTermFrequencyType": true,
+		"interestChargedFromDate": true,
+		"displayName": true
+	  },
+	  "isAutoPopulate":{
+		"interestChargedFromDate": true
+	  },
+	  "isDefaultValue": {
+		"syncDisbursementWithMeeting": false
+	  }
+	},
+	"collectionSheet": {
+	  "isAutoPopulate": {
+		"paymentTypeOption": true
+	  },
+	  "isHiddenFeild":{
+		"newtransactionDate":false
+	  }
+	},
+	"createClient": {
+	  "isReadOnlyField": {
+		"staff": true
+	  }
+	},
+	"createGroup": {
+	  "isReadOnlyField": {
+		"staff": true,
+		"active": true
+	  },
+	  "isAutoPopulate": {
+		"active": true
+	  }
+	},
+	"createCenter": {
+	  "isReadOnlyField": {
+		"active": true,
+		"name": true
+	  },
+	  "isHiddenField": {
+		"villageOptions": false
+	  }
+	},
+	"createGroup": {
+	  "isReadOnlyField": {
+		"staff": true,
+		"active": true
+	  },
+	  "isAutoPopulate": {
+		"active": true
+	  },
+	  "isHiddenMenu": {
+		"attachmeeting": true
+	  }
+	},
+	"labelChanges": {
+	  "calendarChagesEffectiveFrom" : true
+	},
+	"createVillage": {
+	  "isReadOnlyField": {
+		"active": true
+	  }
+	},
+	"viewLoanAccountDetails":{
+	  "isHiddenFeild":{
+		"viewReportButton":true
 	  }
 	}
   }

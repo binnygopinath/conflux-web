@@ -17,11 +17,13 @@
             scope.newGroupTotal = {};
             scope.savingsGroupsTotal = [];
 			scope.date.transactionDate = new Date();
+            scope.date.newtransactionDate = '';
+            scope.isHiddenNewTransactionDate = true;
+            scope.paymentTypeOptions = [];
             var centerOrGroupResource = '';
             resourceFactory.officeResource.getAllOffices(function (data) {
                 scope.offices = data;
             });
-
             scope.productiveCollectionSheet = function () {
                 for (var i = 0; i < scope.offices.length; i++) {
                     if (scope.offices[i].id === scope.officeId) {
@@ -31,6 +33,10 @@
                 scope.meetingDate = dateFilter(scope.date.transactionDate, scope.df);
                 location.path('/productivesheet/' + scope.officeId + '/' + scope.officeName + '/' + scope.meetingDate + '/' + scope.loanOfficerId);
             };
+
+            if(scope.response != undefined){
+                scope.isHiddenNewTransactionDate = scope.response.uiDisplayConfigurations.collectionSheet.isHiddenFeild.newtransactionDate;
+            }
 
             scope.officeSelected = function (officeId) {
                 scope.officeId = officeId;
@@ -117,14 +123,24 @@
             };
 
             scope.showPaymentDetailsFn = function () {
-                var paymentDetail = {};
+                scope.paymentDetail = {};
                 scope.showPaymentDetails = true;
-                paymentDetail.paymentTypeId = "";
-                paymentDetail.accountNumber = "";
-                paymentDetail.checkNumber = "";
-                paymentDetail.routingCode = "";
-                paymentDetail.receiptNumber = "";
-                paymentDetail.bankNumber = "";
+                if(scope.response.uiDisplayConfigurations.collectionSheet.isAutoPopulate.paymentTypeOption){
+                    for(var i in scope.paymentTypeOptions){
+                        if(angular.lowercase(scope.paymentTypeOptions[i].name) == 'cash'){
+                            scope.paymentDetail.paymentTypeId = scope.paymentTypeOptions[i].id;
+                            break;
+                        }
+                    }
+                }else{
+                    scope.paymentDetail.paymentTypeId = "";
+                }
+
+                scope.paymentDetail.accountNumber = "";
+                scope.paymentDetail.checkNumber = "";
+                scope.paymentDetail.routingCode = "";
+                scope.paymentDetail.receiptNumber = "";
+                scope.paymentDetail.bankNumber = "";
             };
 
             scope.previewCollectionSheet = function () {
@@ -140,6 +156,7 @@
                     resourceFactory.centerResource.save({'centerId': scope.centerId, command: 'generateCollectionSheet'}, scope.formData, function (data) {
                         if (data.groups.length > 0) {
                             scope.collectionsheetdata = data;
+                            scope.paymentTypeOptions = data.paymentTypeOptions;
                             scope.clientsAttendanceArray(data.groups);
                             //scope.total(data);
                             scope.savingsgroups = data.groups;
@@ -156,6 +173,7 @@
                     resourceFactory.groupResource.save({'groupId': scope.groupId, command: 'generateCollectionSheet'}, scope.formData, function (data) {
                         if (data.groups.length > 0) {
                             scope.collectionsheetdata = data;
+                            scope.paymentTypeOptions = data.paymentTypeOptions;
                             scope.clientsAttendanceArray(data.groups);
                             //scope.total(data);
                             scope.savingsgroups = data.groups;
@@ -170,6 +188,7 @@
                 } else {
                     resourceFactory.groupResource.save({'groupId': 0, command: 'generateCollectionSheet'}, scope.formData, function (data) {
                         scope.collectionsheetdata = data;
+                        scope.paymentTypeOptions = data.paymentTypeOptions;
                     });
                 }
             };
@@ -405,9 +424,14 @@
                 scope.formData.dateFormat = scope.df;
                 scope.formData.locale = scope.optlang.code;
 
-                if (scope.date.transactionDate) {
+                if (scope.date.newtransactionDate) {
+                    scope.formData.transactionDate = dateFilter(scope.date.newtransactionDate, scope.df);
+                    scope.formData.isTransactionDateOnNonMeetingDate = true;
+                }else{
                     scope.formData.transactionDate = dateFilter(scope.date.transactionDate, scope.df);
+                    scope.formData.isTransactionDateOnNonMeetingDate = false;
                 }
+
                 scope.formData.actualDisbursementDate = this.formData.transactionDate;
                 
                 _.each(scope.savingsgroups, function (group) {

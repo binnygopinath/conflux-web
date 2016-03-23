@@ -1,14 +1,19 @@
 (function (module) {
     mifosX.services = _.extend(module, {
         ResourceFactoryProvider: function () {
-            var baseUrl = "" , apiVer = "/mifosng-provider/api/v1", tenantIdentifier = "";
+            var baseUrl = "" , apiVer = "/fineract-provider/api/v1", tenantIdentifier = "";
             this.setBaseUrl = function (url) {
                 baseUrl = url;
             };
 
             this.setTenantIdenetifier = function (tenant) {
                 tenantIdentifier = tenant;
-            }
+            };
+
+            this.getTenantIdentifier = function () {
+                return tenantIdentifier;
+            };
+
             this.$get = ['$resource', '$rootScope', function (resource, $rootScope) {
                 var defineResource = function (url, paramDefaults, actions) {
                     var tempUrl = baseUrl;
@@ -384,6 +389,15 @@
                     centerTemplateResource: defineResource(apiVer + "/centers/template", {}, {
                         get: {method: 'GET', params: {}}
                     }),
+                    villageResource: defineResource(apiVer + "/villages/:villageId/:anotherresource", {villageId: '@villageId', anotherresource: '@anotherresource'}, {
+                        get: {method: 'GET', params: {}},
+                        getAllVillages: {method: 'GET', params: {}, isArray: true},
+                        update: {method: 'PUT', params: {}}
+
+                    }),
+                    villageTemplateResource: defineResource(apiVer + "/villages/template", {}, {
+                        get: {method: 'GET', params: {}}
+                    }),
                     jobsResource: defineResource(apiVer + "/jobs/:jobId/:resourceType", {jobId: '@jobId', resourceType: '@resourceType'}, {
                         get: {method: 'GET', params: {}, isArray: true},
                         getJobDetails: {method: 'GET', params: {}},
@@ -415,7 +429,15 @@
                     loanReassignmentResource: defineResource(apiVer + "/loans/loanreassignment/:templateSource", {templateSource: '@templateSource'}, {
                         get: {method: 'GET', params: {}}
                     }),
-                    auditResource: defineResource(apiVer + "/audits/:templateResource", {templateResource: '@templateResource'}, {
+                    loanRescheduleResource: defineResource(apiVer + "/rescheduleloans/:scheduleId",{scheduleId:'@scheduleId'},{
+                     get: {method: 'GET',params:{}},
+                     template: {method: 'GET',params:{}},
+                     preview:{method:'GET',params:{command:'previewLoanReschedule'}},
+                     put: {method: 'POST', params: {command:'reschedule'}},
+                     reject:{method:'POST',params:{command:'reject'}},
+                     approve:{method:'POST',params:{command:'approve'}}
+                     }),
+                     auditResource: defineResource(apiVer + "/audits/:templateResource", {templateResource: '@templateResource'}, {
                         get: {method: 'GET', params: {}},
                         search: {method: 'GET', params: {}, isArray: false}
                     }),
@@ -506,6 +528,69 @@
                     externalServicesResource: defineResource(apiVer + "/externalservice/:id", {id: '@id'},{
                         get: {method: 'GET', params: {}, isArray : true},
                         put: {method: 'PUT', params:{}}
+                    }),
+                    provisioningcriteria: defineResource(apiVer + "/provisioningcriteria/:criteriaId",{criteriaId:'@criteriaId'},{
+                        get: {method: 'GET',params:{}},
+                        getAll: {method: 'GET',params:{}, isArray : true},
+                        template: {method: 'GET',params:{}},
+                        post:{method:'POST',params:{}},
+                        put: {method: 'PUT', params: {}}
+                    }),
+                    provisioningentries: defineResource(apiVer + "/provisioningentries/:entryId",{entryId:'@entryId'},{
+                        get: {method: 'GET',params:{}},
+                        getAll: {method: 'GET',params:{}},
+                        template: {method: 'GET',params:{}},
+                        post:{method:'POST',params:{}},
+                        put: {method: 'PUT', params: {}},
+                        createJournals:{method:'POST', params:{command : 'createjournalentry'}},
+                        reCreateProvisioningEntries:{method:'POST', params:{command : 'recreateprovisioningentry'}},
+                        getJournals: {method: 'GET', params: {entryId: '@entryId'}}
+                    }),
+                    provisioningjournals: defineResource(apiVer + "/journalentries/provisioning", {}, {
+                        get: {method: 'GET', params: {}}
+                    }),
+                    provisioningentriesSearch: defineResource(apiVer + "/provisioningentries/entries", {}, {
+                        get: {method: 'GET', params: {}}
+                    }),
+
+                    provisioningcategory: defineResource(apiVer + "/provisioningcategory", {}, {
+                        getAll: {method: 'GET', params: {}, isArray : true}
+                    }),
+
+                    floatingrates: defineResource(apiVer + "/floatingrates/:floatingRateId",{floatingRateId:'@floatingRateId'},{
+                        get: {method: 'GET',params:{}},
+                        getAll: {method: 'GET',params:{}, isArray : true},
+                        post:{method:'POST',params:{}},
+                        put: {method: 'PUT', params: {}}
+                    }),
+                    variableinstallments: defineResource(apiVer + "/loans/:loanId/schedule",{loanId:'@loanId'},{
+                        validate:{method:'POST',params:{command: 'calculateLoanSchedule'}},
+                        addVariations:{method:'POST',params:{command: 'addVariations'}},
+                        deleteVariations:{method:'POST',params:{command: 'deleteVariations'}}
+                    }),
+                    collateralsResource: defineResource(apiVer + "/collaterals/:collateralId", {collateralId:'@collateralId'}, {
+                        getAll: {method: 'GET', params: {}, isArray : true},
+                        get: {method: 'GET', params: {collateralId: '@collateralId'}, isArray : false},
+                        getCollateralQualityStandards: {method: 'GET', params: {associations: 'qualityStandards'}, isArray : false},
+                        update: {method: 'PUT', params: {}}
+                    }),
+                    collateralsQualityStandardsResource: defineResource(apiVer + "/collaterals/:collateralId/qualitystandards/:qualityId", {collateralId:'@collateralId',qualityId:'@qualityId'}, {
+                        update: {method: 'PUT', params: {} }
+                    }),
+                    productCollateralsMappingResource: defineResource(apiVer + "/loanproducts/:loanProductId/collaterals/:productCollateralMappingId", {loanProductId:'@loanProductId', productCollateralMappingId:'@productCollateralMappingId'}, {
+                        getAll: {method: 'GET', params: {loanProductId: '@loanProductId'}, isArray : true},
+                        update: {method: 'PUT', params: {} }
+                    }),
+                    pledgeResource: defineResource(apiVer + "/pledges/:pledgeId/", {pledgeId:'@pledgeId'}, {
+                        getCollateralDetails: {method: 'GET',params: {association: 'collateralDetails'}},
+                        getAllPledges: {method: 'GET',params: {limit: 1000}},
+                        getAll: {method: 'GET', params: {pledgeId: '@pledgeId'}, isArray : true},
+                        deleteCollateralDetails: {method: 'DELETE', params: {collateralDetailId : '@collateralDetailId'}},
+                        closePledge : {method: 'POST', params: {command : 'close'} }
+                    }),
+                    collateralDetailsResource: defineResource(apiVer + "/pledges/:pledgeId/collateraldetails/:collateralDetailId", {pledgeId:'@pledgeId',
+                        collateralDetailId : '@collateralDetailId'}, {
+                        delete: {method: 'DELETE', params: {}}
                     })
                 };
             }];

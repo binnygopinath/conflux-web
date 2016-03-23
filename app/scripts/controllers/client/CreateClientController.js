@@ -1,6 +1,6 @@
 (function (module) {
     mifosX.controllers = _.extend(module, {
-        CreateClientController: function (scope, resourceFactory, location, http, dateFilter, API_VERSION, $upload, $rootScope, routeParams) {
+        CreateClientController: function (scope, resourceFactory, location, routeParams, http, dateFilter, API_VERSION, $upload, $rootScope, routeParams) {
             scope.offices = [];
             scope.staffs = [];
             scope.savingproducts = [];
@@ -8,10 +8,13 @@
             scope.first.date = new Date();
             scope.first.submitondate = new Date ();
             scope.formData = {};
+            scope.clientNonPersonDetails = {};
             scope.restrictDate = new Date();
             scope.showSavingOptions = false;
             scope.opensavingsproduct = false;
             scope.forceOffice = null;
+            scope.showNonPersonOptions = false;
+            scope.clientPersonId = 1;
 
             var requestParams = {staffInSelectedOfficeOnly:true};
             if (routeParams.groupId) {
@@ -28,6 +31,9 @@
                 scope.genderOptions = data.genderOptions;
                 scope.clienttypeOptions = data.clientTypeOptions;
                 scope.clientClassificationOptions = data.clientClassificationOptions;
+                scope.clientNonPersonConstitutionOptions = data.clientNonPersonConstitutionOptions;
+                scope.clientNonPersonMainBusinessLineOptions = data.clientNonPersonMainBusinessLineOptions;
+                scope.clientLegalFormOptions = data.clientLegalFormOptions;
                 if (data.savingProductOptions.length > 0) {
                     scope.showSavingOptions = true;
                 }
@@ -45,7 +51,23 @@
                         scope.formData.staffId = data.staffId;
                     }
                 }
+                if(routeParams.staffId) {
+                    for(var i in scope.staffs) {
+                        if (scope.staffs[i].id == routeParams.staffId) {
+                            scope.formData.staffId = scope.staffs[i].id;
+                            break;
+                        }
+                    }
+                }
             });
+
+            scope.displayPersonOrNonPersonOptions = function (legalFormId) {
+                if(legalFormId == scope.clientPersonId || legalFormId == null) {
+                    scope.showNonPersonOptions = false;
+                }else {
+                    scope.showNonPersonOptions = true;
+                }
+            };
 
             scope.changeOffice = function (officeId) {
                 resourceFactory.clientTemplateResource.get({staffInSelectedOfficeOnly:true, officeId: officeId
@@ -95,17 +117,30 @@
                     this.formData.dateOfBirth = dateFilter(scope.first.dateOfBirth, scope.df);
                 }
 
+                if(scope.first.incorpValidityTillDate) {
+                    this.formData.clientNonPersonDetails.locale = scope.optlang.code;
+                    this.formData.clientNonPersonDetails.dateFormat = scope.df;
+                    this.formData.clientNonPersonDetails.incorpValidityTillDate = dateFilter(scope.first.incorpValidityTillDate, scope.df);
+                }
+
                 if (!scope.opensavingsproduct) {
                     this.formData.savingsProductId = null;
                 }
 
                 resourceFactory.clientResource.save(this.formData, function (data) {
+                    if(routeParams.pledgeId){
+                        var updatedData = {};
+                        updatedData.clientId = data.clientId;
+                        resourceFactory.pledgeResource.update({ pledgeId : routeParams.pledgeId}, updatedData, function(pledgeData){
+
+                        });
+                    }
                     location.path('/viewclient/' + data.clientId);
                 });
             };
         }
     });
-    mifosX.ng.application.controller('CreateClientController', ['$scope', 'ResourceFactory', '$location', '$http', 'dateFilter', 'API_VERSION', '$upload', '$rootScope', '$routeParams', mifosX.controllers.CreateClientController]).run(function ($log) {
+    mifosX.ng.application.controller('CreateClientController', ['$scope', 'ResourceFactory', '$location', '$routeParams', '$http', 'dateFilter', 'API_VERSION', '$upload', '$rootScope', '$routeParams', mifosX.controllers.CreateClientController]).run(function ($log) {
         $log.info("CreateClientController initialized");
     });
 }(mifosX.controllers || {}));

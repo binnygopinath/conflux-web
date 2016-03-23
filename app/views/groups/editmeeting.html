@@ -47,11 +47,13 @@
             </div>
             <br>
             <div class="form-group">
-                <label class="control-label col-sm-4">{{'label.input.calendar.changes.effective.from' | translate}}<span
+                <label class="control-label col-sm-4" ng-hide="response.uiDisplayConfigurations.labelChanges.calendarChagesEffectiveFrom">{{'label.input.calendar.changes.effective.from' | translate}}<span
+                        class="required">*</span></label>
+                <label class="control-label col-sm-4" ng-show="response.uiDisplayConfigurations.labelChanges.calendarChagesEffectiveFrom">{{'label.input.calendar.next.meeting.falls.on' | translate}}<span
                         class="required">*</span></label>
                 <div class="col-sm-3">
                     <input id="startDate" type="text" datepicker-pop="dd MMMM yyyy" ng-model="first.date"
-                           is-open="opened" min="'2000-01-01'" max="restrictDate" class="form-control"/>
+                           is-open="opened" min="minDate" max="'2020-06-22'" class="form-control"/>
                 </div>
             </div>
 	        <div class="col-md-offset-2">

@@ -67,6 +67,11 @@
                     scope.showDateField = false;
                     scope.taskPermissionName = 'DISBURSALUNDO_LOAN';
                     break;
+                case "undolastdisbursal":
+                    scope.title = 'label.heading.undolastdisbursal';
+                    scope.showDateField = false;
+                    scope.taskPermissionName = 'DISBURSALLASTUNDO_LOAN';
+                    break;
                 case "disburse":
                     scope.modelName = 'actualDisbursementDate';
                     resourceFactory.loanTrxnsTemplateResource.get({loanId: scope.accountId, command: 'disburse'}, function (data) {
@@ -75,6 +80,7 @@
                             scope.formData.paymentTypeId = data.paymentTypeOptions[0].id;
                         }
                         scope.formData.transactionAmount = data.amount;
+                        scope.nextRepaymentDate = new Date(data.possibleNextRepaymentDate) || new Date();
                         scope.formData[scope.modelName] = new Date();
                         if (data.fixedEmiAmount) {
                             scope.formData.fixedEmiAmount = data.fixedEmiAmount;
@@ -489,6 +495,7 @@
                     });
                 } else {
                     params.loanId = scope.accountId;
+                    this.formData.adjustRepaymentDate = dateFilter(this.formData.adjustRepaymentDate, scope.df);
                     resourceFactory.LoanAccountResource.save(params, this.formData, function (data) {
                         location.path('/viewloanaccount/' + data.loanId);
                     });

@@ -38,6 +38,19 @@
                         scope.formData.staffId = data.staffId;
                     }
                 }
+                if(routeParams.staffId) {
+                    for(var i in scope.staffs) {
+                        if (scope.staffs[i].id == routeParams.staffId) {
+                            scope.formData.staffId = scope.staffs[i].id;
+                            break;
+                        }
+                    }
+                }
+                if(scope.response.uiDisplayConfigurations.createGroup.isAutoPopulate.active){
+                    scope.formData.active = true;
+                    scope.choice = 1;
+                }
+
             });
 
             scope.viewClient = function (item) {

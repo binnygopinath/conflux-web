@@ -5,7 +5,7 @@
             'angular': '../bower_components/angular/angular',
             'angular-resource': '../bower_components/angular-resource/angular-resource',
             'angular-route': '../bower_components/angular-route/angular-route',
-            'angular-translate': '../bower_components/angular-translate/angular-translate',
+            'angular-translate-finflux': '../bower_components/angular-translate-finflux/angular-translate-finflux',
             'angular-translate-loader-static-files': '../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files',
             'angular-mocks': '../bower_components/angular-mocks/angular-mocks',
             'angularui': '../bower_components/angular-bootstrap/ui-bootstrap',
@@ -17,7 +17,6 @@
             'nvd3': '../bower_components/nvd3/nv.d3',
             'nvd3ChartDirectives': '../scripts/modules/angularjs-nvd3-directives',
             'styles': '../styles',
-            'test': '../../test/functional',
             'notificationWidget': '../scripts/modules/notificationWidget',
             'configurations': '../scripts/modules/configurations',
             'angularFileUpload': '../bower_components/angularjs-file-upload/angular-file-upload',
@@ -36,11 +35,11 @@
             'angular-utils-pagination':'../bower_components/angular-utils-pagination/dirPagination'
         },
         shim: {
-            'angular': { exports: 'angular' },
+            'angular': { deps: ['jquery','chosen.jquery.min'],exports: 'angular' },
             'angular-resource': { deps: ['angular'] },
             'angular-route': { deps: ['angular'] },
-            'angular-translate': { deps: ['angular'] },
-            'angular-translate-loader-static-files': {deps: ['angular' , 'angular-translate'] },
+            'angular-translate-finflux': { deps: ['angular'] },
+            'angular-translate-loader-static-files': {deps: ['angular' , 'angular-translate-finflux'] },
             'angularui': { deps: ['angular'] },
             'angularuitpls': { deps: ['angular' , 'angularui' ] },
             'angular-mocks': { deps: ['angular'] },
@@ -69,7 +68,7 @@
                     'jquery',
                     'angular-resource',
                     'angular-route',
-                    'angular-translate',
+                    'angular-translate-finflux',
                     'angular-translate-loader-static-files',
                     'angularui',
                     'angularuitpls',
@@ -105,8 +104,6 @@
     });
 
     require(['mifosXComponents', 'mifosXStyles'], function (componentsInit) {
-        componentsInit().then(function(){
-                    angular.bootstrap(document, ['MifosX_Application']);
-        });
+        componentsInit().then(function(){angular.bootstrap(document, ['MifosX_Application'])});
     });
 }());
