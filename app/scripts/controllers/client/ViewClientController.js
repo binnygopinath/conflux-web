@@ -156,7 +156,7 @@
                     scope.loancycledetail = data;
                 });
 
-                resourceFactory.DataTablesResource.getAllDataTables({apptable: 'm_client'}, function (data) {
+                resourceFactory.DataTablesResource.getAllDataTables({apptable: 'm_client', id: routeParams.id}, function (data) {
                     scope.clientdatatables = data;
                 });
 

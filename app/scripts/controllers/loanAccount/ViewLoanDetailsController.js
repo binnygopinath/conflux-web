@@ -609,7 +609,7 @@
                 + scope.glimFeepenaltyOutstandingAmount.toFixed(2);
             }
 
-            resourceFactory.DataTablesResource.getAllDataTables({apptable: 'm_loan'}, function (data) {
+            resourceFactory.DataTablesResource.getAllDataTables({apptable: 'm_loan', id: routeParams.id}, function (data) {
                 scope.loandatatables = data;
             });
 
