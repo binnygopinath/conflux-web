@@ -618,6 +618,8 @@
 				    <div class="col-sm-3 col-md-3">
 				    	<div class="thumbnail row">
 				    		<h4><strong>{{client.displayName}}</strong></h4>
+				    		<h4 data-ng-show="client.legalForm">{{client.legalForm.value}}</h4>
+				    		<h4 data-ng-show="client.clientNonPersonDetails">{{client.clientNonPersonDetails.constitution.name}}</h4>
 					    	<img ng-hide="client.imagePresent" ng-src="./images/client-image-placeholder.png" alt="Avatar">
 				        	<img ng-show="client.imagePresent"  ng-src="{{image}}" alt="Avatar" data-ng-click="showPicture()" title="{{'label.zoom' | translate}}" >
 					        <div class="btn-group-xs center">
